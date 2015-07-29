@@ -11,9 +11,10 @@ module.exports = {
     },
 
     videos: function (req, res, next) {
-        console.dir(req.body.id);
-     // var categoryID =  req.params.id;
-        var categoryID = "55881f6762d47a47057a0be8";
+    //    console.dir(req.body.categoryID);
+      var categoryID =  req.body.categoryID;
+        console.dir(categoryID);
+     //   var categoryID = "55b45249b73d1c8798196f29";
         Video.find({"videoCategory.$id": ObjectId(categoryID)}, function(err, video) {
             if (err) return console .error (err);
             res.json (video.map ( function(returnVideo){
