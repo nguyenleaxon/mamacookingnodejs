@@ -10,7 +10,10 @@ var videoSchema = mongoose.Schema({
     videocategory: { type: Schema.Types.ObjectId, ref: 'VideoCategory' }
 });
 
-
+/*videoSchema.methods.getOrders = function(){
+    userModel.count({name: 'anand'}, function(err, c)
+    //return Order.find({ customerId: this._id }, cb);
+};*/
 
 var Video = mongoose.model('video',videoSchema,"video");
 module.exports = Video;
