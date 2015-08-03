@@ -4,7 +4,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 module.exports = {
     registerRoutes: function (app) {
         app.get("/", this.home);
-        app.post("/videos", this.videos);
+        app.post("/getAllVideoByCategory", this.getAllVideoByCategory);
         app.post("/getAllVideoFirstTime",this.getAllVideoFirstTime)
     },
 
@@ -12,23 +12,22 @@ module.exports = {
         res.render('home');
     },
 
-    videos: function (req, res, next) {
+    getAllVideoByCategory: function (req, res, next) {
         var categoryID =  req.body.categoryID;
         var skipVideo = req.body.skip;
-        var limitVideo = 4;
+        var limitVideo = 5;
         console.dir(categoryID);
         console.dir(skipVideo);
 
             Video.find({"videoCategory.$id": ObjectId(categoryID)}, function(err, video) {
                 if (err) return console .error (err);
                 res.json (video.map ( function(returnVideo){
+                    console.dir(returnVideo);
                     return {
                         id: returnVideo._id,
                         name : returnVideo.name,
                         image: returnVideo.image,
-                        url: returnVideo.url,
-                        total:count
-
+                        url: returnVideo.url
                     }
                 }));
             }).sort("name").skip(skipVideo).limit(limitVideo);
@@ -40,13 +39,14 @@ module.exports = {
     getAllVideoFirstTime : function(req,res,next) {
         var categoryID =  req.body.categoryID;
         var skipVideo = req.body.skip;
-        var limitVideo = 4;
+        var limitVideo = 5;
         console.dir(categoryID);
         console.dir(skipVideo);
         Video.count({"videoCategory.$id": ObjectId(categoryID)}, function(err, count) {
             if (err) return console .error (err);
             Video.find({"videoCategory.$id": ObjectId(categoryID)}, function(err, video) {
                 if (err) return console .error (err);
+                console.dir(video);
                 res.json (video.map ( function(returnVideo){
                     return {
                         id: returnVideo._id,
