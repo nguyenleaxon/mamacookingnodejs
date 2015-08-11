@@ -1,11 +1,12 @@
 var Video = require("../models/video.js");
 var ObjectId = require('mongoose').Types.ObjectId;
-
+var unorm = require('unorm');
 module.exports = {
     registerRoutes: function (app) {
         app.get("/", this.home);
         app.post("/getAllVideoByCategory", this.getAllVideoByCategory);
-        app.post("/getAllVideoFirstTime",this.getAllVideoFirstTime)
+        app.post("/getAllVideoFirstTime",this.getAllVideoFirstTime);
+        app.post("/findAllVideoByName",this.findAllVideoByName);
     },
 
     home: function (req, res, next) {
@@ -61,7 +62,24 @@ module.exports = {
 
         });
 
+    },
+
+    findAllVideoByName : function(req,res,next) {
+        var text =  req.body.videoName;
+        var combining = /[\u0300-\u036F]/g;
+        var data = unorm.nfkd(text).replace(combining, '');
+        Video.find({'unicodeName': new RegExp(data,'i')},function(err, video){
+            res.json (video.map ( function(returnVideo){
+                return {
+                    id: returnVideo._id,
+                    name : returnVideo.name,
+                    image: returnVideo.image,
+                    url: returnVideo.url
+                }
+            }));
+        }).sort("name").limit(20);
     }
+
 
 
 };
